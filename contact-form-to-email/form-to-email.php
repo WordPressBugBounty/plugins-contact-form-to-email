@@ -3,7 +3,7 @@
 Plugin Name: Contact Form Email
 Plugin URI: https://form2email.dwbooster.com/download
 Description: Contact form that sends the data to email and also to a database list and CSV file.
-Version: 1.3.49
+Version: 1.3.50
 Author: CodePeople
 Author URI: https://form2email.dwbooster.com
 Text Domain: contact-form-to-email
@@ -69,7 +69,7 @@ function cfte_plugin_init() {
    if (!strpos($ao_options,'stringify.js'))
       update_option('autoptimize_js_exclude',"jQuery.stringify.js,jquery.validate.js,".$ao_options);
 }
-add_action('plugins_loaded', 'cfte_plugin_init');
+add_action('init', 'cfte_plugin_init');
 
 //START: activation redirection 
 function cfte_activation_redirect( $plugin ) {
