@@ -754,7 +754,7 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
 
         if (
                (!is_admin() && $this->get_option('cv_enable_captcha', CP_CFEMAIL_DEFAULT_cv_enable_captcha) != 'false') &&
-               ( (strtolower($this->get_param('hdcaptcha_'.$this->prefix.'_post')) != strtolower($_SESSION['rand_code'.$sequence])) ||
+               ( !isset($_SESSION['rand_code'.$sequence]) || (strtolower($this->get_param('hdcaptcha_'.$this->prefix.'_post')) != strtolower($_SESSION['rand_code'.$sequence])) ||
                  ($_SESSION['rand_code'.$sequence] == '')
                )
                &&
