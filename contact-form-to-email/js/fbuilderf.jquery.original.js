@@ -318,14 +318,14 @@ jQuery(window).on('load', function(){
 			    var str = '<option value="" '+(("" == $(this).attr("dvalue"))?"selected":"")+'></option>';
 			    for (var i=0;i<items.length;i++)
 			    	if ((items[i].ftype=="ftext" || items[i].ftype=="femail" || items[i].ftype=="fpassword") && (items[i].name != $(this).attr("dname")))
-			    		str += '<option value="'+items[i].name+'" '+((items[i].name == $(this).attr("dvalue"))?"selected":"")+'>'+(items[i].title)+'</option>';
+			    		str += '<option value="'+items[i].name+'" '+((items[i].name == $(this).attr("dvalue"))?"selected":"")+'>'+htmlEncode(items[i].title)+'</option>';
 			    $(this).html(str);
 			});
 			$('.dependencies').each(function(){
 			    var str = '<option value="" '+(("" == $(this).attr("dvalue"))?"selected":"")+'></option>';
 			    for (var i=0;i<items.length;i++)
 			    	if (items[i].name != $(this).attr("dname"))
-			    		str += '<option value="'+items[i].name+'" '+((items[i].name == $(this).attr("dvalue"))?"selected":"")+'>'+(items[i].title)+'</option>';
+			    		str += '<option value="'+items[i].name+'" '+((items[i].name == $(this).attr("dvalue"))?"selected":"")+'>'+htmlEncode(items[i].title)+'</option>';
 			    $(this).html(str);
 			});
 			$('.dependencies').change(function(){
@@ -423,14 +423,14 @@ jQuery(window).on('load', function(){
 			var str = "";
 			for (var i=0;i<items.length;i++)
 				if (items[i].ftype=="femail")
-					str += '<option value="'+items[i].name+'" '+((items[i].name == $('#cu_user_email_field').attr("def"))?"selected":"")+'>'+(items[i].title)+'</option>';
+					str += '<option value="'+items[i].name+'" '+((items[i].name == $('#cu_user_email_field').attr("def"))?"selected":"")+'>'+htmlEncode(items[i].title)+'</option>';
 			$('#cu_user_email_field').html(str);
             //field list for paypal request
             if (($('#request_cost').length > 0) && ($('#request_cost').is('select')))
             {
                 var str = "";
                 for (var i=0;i<items.length;i++)
-                    str += '<option value="'+items[i].name+'" '+((items[i].name == $('#request_cost').attr("def"))?"selected":"")+'>'+items[i].name+'('+(items[i].title)+')</option>';
+                    str += '<option value="'+items[i].name+'" '+((items[i].name == $('#request_cost').attr("def"))?"selected":"")+'>'+items[i].name+'('+htmlEncode(items[i].title)+')</option>';
                 $('#request_cost').html(str);
             }
             //request amount list
@@ -438,7 +438,7 @@ jQuery(window).on('load', function(){
             {
 			    var str = '<option value="" '+(('' == $('#paypal_price_field').attr("def"))?"selected":"")+'> ---- No ---- </option>';
 			    for (var i=0;i<items.length;i++)
-			    		str += '<option value="'+items[i].name+'" '+((items[i].name == $('#paypal_price_field').attr("def"))?"selected":"")+'>'+(items[i].title)+'</option>';
+			    		str += '<option value="'+items[i].name+'" '+((items[i].name == $('#paypal_price_field').attr("def"))?"selected":"")+'>'+htmlEncode(items[i].title)+'</option>';
 			    $('#paypal_price_field').html(str);
 		    }
 		}
@@ -687,14 +687,14 @@ jQuery(window).on('load', function(){
 				description:"This is my form. Please fill it out. It's awesome!",
 				formlayout:"top_aligned",
 				display:function(){
-					 return '<div class="fform" id="field">'+(this.title!=''?'<h1>'+this.title+'</h1>':'')+(this.description!=''?'<span>'+this.description+'</span>':'')+'</div>';
+					 return '<div class="fform" id="field">'+(this.title!=''?'<h1>'+htmlEncode(this.title)+'</h1>':'')+(this.description!=''?'<span>'+htmlEncode(this.description)+'</span>':'')+'</div>';
 				},
 				show:function(){
                     var tmpstr = '';
                     if (this.title != '')
-                        tmpstr += '<h1>'+this.title+'</h1>';
+                        tmpstr += '<h1>'+htmlEncode(this.title)+'</h1>';
                     if (this.description != '')
-                        tmpstr += '<span>'+this.description+'</span>';
+                        tmpstr += '<span>'+htmlEncode(this.description)+'</span>';
 					return '<div class="fform" id="field">'+tmpstr+'</div>';
 				},
 				showAllSettings:function(){
@@ -820,13 +820,13 @@ jQuery(window).on('load', function(){
 				maxlength:"",
 				equalTo:"",
 				display:function(){
-					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><input class="field disabled '+this.size+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input class="field disabled '+this.size+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field '+this.size+((this.required)?" required":"")+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field '+this.size+((this.required)?" required":"")+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
-                    return '<div class="column"><label>Min length/characters</label><br /><input name="sMinlength" id="sMinlength" value="'+this.minlength+'"></div><div class="column"><label>Max length/characters</label><br /><input name="sMaxlength" id="sMaxlength" value="'+this.maxlength+'"></div><div class="clearer"></div>';
+                    return '<div class="column"><label>Min length/characters</label><br /><input name="sMinlength" id="sMinlength" value="'+htmlEncode(this.minlength)+'"></div><div class="column"><label>Max length/characters</label><br /><input name="sMaxlength" id="sMaxlength" value="'+htmlEncode(this.maxlength)+'"></div><div class="clearer"></div>';
                 }
 		});
 		var facceptance=function(){};
@@ -838,13 +838,13 @@ jQuery(window).on('load', function(){
 			  url:"",
 			  message:"",
 				display:function(){
-					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><div class="dfield"><input class="field" disabled="true" type="checkbox"/> '+this.title+((this.required)?"*":"")+'<span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><div class="dfield"><input class="field" disabled="true" type="checkbox"/> '+htmlEncode(this.title)+((this.required)?"*":"")+'<span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
 					//return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field '+this.size+((this.required)?" required":"")+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
 				var me = this,
 						dlg = '',
-						label = me.title;
+						label = htmlEncode(me.title);
 
 					if(!/^\s*$/.test(me.url))
 					{
@@ -853,7 +853,7 @@ jQuery(window).on('load', function(){
 					else if(!/^\s*$/.test(me.message))
 					{
 						label = '<a href="javascript:void(0);" class="cff-open-dlg">'+label+'</a>';
-						dlg += '<div class="cff-dialog hide"><span class="cff-close-dlg"></span><div class="cff-dialog-content">'+me.message+'</div></div>'
+						dlg += '<div class="cff-dialog hide"><span class="cff-close-dlg"></span><div class="cff-dialog-content">'+htmlEncode(me.message)+'</div></div>'
 					}
 					return '<div class="fields '+me.csslayout+' cff-checkbox-field" id="field'+me.identifier+'-'+me.index+'"><div class="dfield">'+
 					'<div class="one_column"><label><input name="'+me.name+'" id="'+me.name+'" class="field '+((this.required)?" required":"")+'" value="'+htmlEncode(me.value)+'" vt="'+htmlEncode((/^\s*$/.test(me.value)) ? me.title : me.value)+'" type="checkbox" /> <span>'+
@@ -914,10 +914,10 @@ jQuery(window).on('load', function(){
 				size:"medium",
 				equalTo:"",
 				display:function(){
-					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><input class="field disabled '+this.size+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input class="field disabled '+this.size+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field email '+this.size+((this.required)?" required":"")+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field email '+this.size+((this.required)?" required":"")+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
                     var str = "";
@@ -988,13 +988,13 @@ jQuery(window).on('load', function(){
 				minlength:"",
 				maxlength:"",
 				display:function(){
-					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea class="field disabled '+this.size+'">'+this.predefined+'</textarea><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea class="field disabled '+this.size+'">'+htmlEncode(this.predefined)+'</textarea><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' class="field '+this.size+((this.required)?" required":"")+'">'+htmlEncode(this.predefined)+'</textarea><span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' class="field '+this.size+((this.required)?" required":"")+'">'+htmlEncode(this.predefined)+'</textarea><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
-                    return '<div class="column"><label>Min length/characters</label><br /><input name="sMinlength" id="sMinlength" value="'+this.minlength+'"></div><div class="column"><label>Max length/characters</label><br /><input name="sMaxlength" id="sMaxlength" value="'+this.maxlength+'"></div><div class="clearer"></div>';
+                    return '<div class="column"><label>Min length/characters</label><br /><input name="sMinlength" id="sMinlength" value="'+htmlEncode(this.minlength)+'"></div><div class="column"><label>Max length/characters</label><br /><input name="sMaxlength" id="sMaxlength" value="'+htmlEncode(this.maxlength)+'"></div><div class="clearer"></div>';
                 }
 		});
 		var ffile=function(){};
