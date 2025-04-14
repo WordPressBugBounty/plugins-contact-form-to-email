@@ -17,13 +17,13 @@ $date_start = '';
 $date_end = '';
 
 $cond = '';
-if ($_GET["search"] != '') $cond .= " AND (data like '%".esc_sql($_GET["search"])."%' OR posted_data LIKE '%".esc_sql($_GET["search"])."%')";
-if ($_GET["dfrom"] != '') 
+if (!empty($_GET["search"])) $cond .= " AND (data like '%".esc_sql($_GET["search"])."%' OR posted_data LIKE '%".esc_sql($_GET["search"])."%')";
+if (!empty($_GET["dfrom"])) 
 { 
     $date_start = sanitize_text_field($_GET["dfrom"]);
     $cond .= " AND (`time` >= '".esc_sql($date_start)."')";    
 }    
-if ($_GET["dto"] != '') 
+if (!empty($_GET["dto"])) 
 {
     $date_end = sanitize_text_field($_GET["dto"]);
     $cond .= " AND (`time` <= '".esc_sql($date_end)." 23:59:59')";    
@@ -58,11 +58,13 @@ for ($i=0;$i<=23;$i++)
         $hourly_messages .= $fields['time']['k'.($i<10?'0':'').$i].($i<23?',':'');
     else
         $hourly_messages .='0'.($i<23?',':'');
-        
-if ($date_start == '')        
-    $date_start = substr(min(array_keys($fields["date"])),1);
-if ($date_end == '')        
-    $date_end = substr(max(array_keys($fields["date"])),1);
+
+if (count(array_keys($fields["date"]))) {
+    if ($date_start == '')        
+        $date_start = substr(min(array_keys($fields["date"])),1);
+    if ($date_end == '')        
+        $date_end = substr(max(array_keys($fields["date"])),1);
+}
 
 $daily_messages = '';
 $date = $date_start;    
@@ -107,9 +109,9 @@ else
         <input type="hidden" name="cal" value="<?php echo esc_attr($this->item); ?>" />
         <input type="hidden" name="report" value="1" />
         <input type="hidden" name="field" value="<?php echo esc_attr($_GET["field"]); ?>" />
-		<nobr><label>Search for:</label> <input type="text" name="search" value="<?php echo esc_attr($_GET["search"]); ?>">&nbsp;&nbsp;</nobr>
-		<nobr><label>From:</label> <input autocomplete="off" type="text" id="dfrom" name="dfrom" value="<?php echo esc_attr($_GET["dfrom"]); ?>" >&nbsp;&nbsp;</nobr>
-		<nobr><label>To:</label> <input autocomplete="off" type="text" id="dto" name="dto" value="<?php echo esc_attr($_GET["dto"]); ?>" >&nbsp;&nbsp;</nobr>
+		<nobr><label>Search for:</label> <input type="text" name="search" value="<?php echo !empty($_GET["search"]) ? esc_attr($_GET["search"]) : '' ; ?>">&nbsp;&nbsp;</nobr>
+		<nobr><label>From:</label> <input autocomplete="off" type="text" id="dfrom" name="dfrom" value="<?php echo empty($_GET["dfrom"]) ? '' : esc_attr($_GET["dfrom"]); ?>" >&nbsp;&nbsp;</nobr>
+		<nobr><label>To:</label> <input autocomplete="off" type="text" id="dto" name="dto" value="<?php echo empty($_GET["dto"]) ? '' : esc_attr($_GET["dto"]); ?>" >&nbsp;&nbsp;</nobr>
 		<nobr><label>Item:</label> <select id="cal" name="cal">
           <option value="0">[<?php _e('All Items','cpappb'); ?>]</option>
    <?php
@@ -163,9 +165,9 @@ else
          <input type="hidden" name="page" value="<?php echo esc_attr($this->menu_parameter); ?>" />
          <input type="hidden" name="cal" value="<?php echo esc_attr($this->item); ?>" />
          <input type="hidden" name="report" value="1" />
-         <input type="hidden" name="search" value="<?php echo esc_attr($_GET["search"]); ?>" />
-         <input type="hidden" name="dfrom" value="<?php echo esc_attr($_GET["dfrom"]); ?>" />
-         <input type="hidden" name="dto" value="<?php echo esc_attr($_GET["dto"]); ?>" />
+         <input type="hidden" name="search" value="<?php echo empty($_GET["search"]) ? '' : esc_attr($_GET["search"]); ?>" />
+         <input type="hidden" name="dfrom" value="<?php echo empty($_GET["dfrom"]) ? '' : esc_attr($_GET["dfrom"]); ?>" />
+         <input type="hidden" name="dto" value="<?php echo empty($_GET["dto"]) ? '' : esc_attr($_GET["dto"]); ?>" />
 		 <h3><?php _e('Select field for the report','cpappb'); ?>: <select name="field" onchange="document.cfm_formrep.submit();">
               <?php
                    foreach ($fields as $item => $value)
@@ -184,21 +186,23 @@ else
 
         <div style="padding:10px;">
         <?php
-          $arr = $fields[$_GET["field"]];
-          arsort($arr, SORT_NUMERIC);
-          $total = 0;
-          /* $totalsize = 600; */
-          foreach ($arr as $item => $value)
-              $total += $value;
-          /* $max = max($arr);
-          $totalsize = round(600 / ($max/$total) ); */
-          $count = 0;
-          foreach ($arr as $item => $value)
-          {
-              echo $value.' times: '.esc_html(strlen($item)>50?substr($item,1,50).'...':substr($item,1));
-              echo '<div style="width:'.round($value/$total*100).'%;border:1px solid white;margin-bottom:3px;font-size:9px;text-align:center;font-weight:bold;background-color:#'.$color_array[$count].'">'.round($value/$total*100,2).'%</div>';
-              $count++;
-              if ($count >= count($color_array)) $count = count($color_array)-1;
+          $arr = empty($_GET["field"]) || !isset($fields[$_GET["field"]]) ? '' : $fields[$_GET["field"]];
+          if (is_array($arr)) {
+              arsort($arr, SORT_NUMERIC);
+              $total = 0;
+              /* $totalsize = 600; */
+              foreach ($arr as $item => $value)
+                  $total += $value;
+              /* $max = max($arr);
+              $totalsize = round(600 / ($max/$total) ); */
+              $count = 0;
+              foreach ($arr as $item => $value)
+              {
+                  echo $value.' times: '.esc_html(strlen($item)>50?substr($item,1,50).'...':substr($item,1));
+                  echo '<div style="width:'.round($value/$total*100).'%;border:1px solid white;margin-bottom:3px;font-size:9px;text-align:center;font-weight:bold;background-color:#'.$color_array[$count].'">'.round($value/$total*100,2).'%</div>';
+                  $count++;
+                  if ($count >= count($color_array)) $count = count($color_array)-1;
+              }
           }
         ?>
         </div>

@@ -1328,7 +1328,7 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
         for ($i=0; $i < count($form_data[0]); $i++)
         {
             $form_data[0][$i]->title = $this->filter_allowed_tags(__($form_data[0][$i]->title,'contact-form-to-email'));
-            @$form_data[0][$i]->userhelpTooltip = $this->filter_allowed_tags(__($form_data[0][$i]->userhelpTooltip,'contact-form-to-email'));
+            if (isset($form_data[0][$i]->userhelpTooltip)) $form_data[0][$i]->userhelpTooltip = $this->filter_allowed_tags(__($form_data[0][$i]->userhelpTooltip,'contact-form-to-email'));
             $form_data[0][$i]->userhelp = $this->filter_allowed_tags(__($form_data[0][$i]->userhelp,'contact-form-to-email'));
 
             $form_data[0][$i]->csslayout = sanitize_text_field($form_data[0][$i]->csslayout);
