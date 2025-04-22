@@ -1,5 +1,21 @@
-<?php if ( !defined('CP_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } ?>
-<form class="cpp_form" name="<?php echo $this->prefix; ?>_pform<?php echo '_'.$this->print_counter; ?>" id="<?php echo $this->prefix; ?>_pform<?php echo '_'.$this->print_counter; ?>" action="<?php $this->get_site_url(); ?>" method="post" enctype="multipart/form-data" onsubmit="return <?php echo $this->prefix; ?>_pform_doValidate<?php echo '_'.$this->print_counter; ?>(this);"><input type="hidden" name="cp_pform_psequence" value="<?php echo '_'.$this->print_counter; ?>" /><input type="hidden" name="<?php echo $this->prefix; ?>_pform_process" value="1" /><input type="hidden" name="<?php echo $this->prefix; ?>_id" value="<?php echo $this->item; ?>" /><input type="hidden" name="cp_ref_page" value="<?php esc_attr($this->get_site_url()); ?>" /><input type="hidden" name="form_structure<?php echo '_'.$this->print_counter; ?>" id="form_structure<?php echo '_'.$this->print_counter; ?>" size="180" value="<?php echo $raw_form_str; ?>" /><input type="hidden" name="refpage<?php echo '_'.$this->print_counter; ?>" id="refpage<?php echo '_'.$this->print_counter; ?>" value=""><input type="hidden" name="<?php echo $this->prefix; ?>_pform_status" value="0" /><?php if (count($preload_params)) { ?><input type="hidden" name="edititem" value="<?php echo $preload_params["itemnumber"]; ?>" /><?php } ?><input name="anonce" type="hidden" value="<?php echo wp_create_nonce( 'cfte_actions_emailform' ); ?>"/><input name="cftehp" id="cftehp<?php echo '_'.$this->print_counter; ?>" type="hidden" value="1"/>
+<?php if ( !defined('CP_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+
+  if (!is_admin()) {
+      $full_url = get_permalink();
+  
+      // Parse the URL to get the path
+      $path = parse_url($full_url, PHP_URL_PATH);
+      if ($path == "") $path = $full_url;
+      
+      // Add a random GET parameter to the path to prevent cache
+      $cache_buster = rand(100000, 999999);
+      $path .= (strpos($path, '?') === false ? '?' : '&') . 'ahbnocache=' . $cache_buster;
+  }
+  else $path = "";  
+
+
+?>
+<form class="cpp_form" name="<?php echo $this->prefix; ?>_pform<?php echo '_'.$this->print_counter; ?>" id="<?php echo $this->prefix; ?>_pform<?php echo '_'.$this->print_counter; ?>" action="<?php echo esc_attr($path); ?>" method="post" enctype="multipart/form-data" onsubmit="return <?php echo $this->prefix; ?>_pform_doValidate<?php echo '_'.$this->print_counter; ?>(this);"><input type="hidden" name="cp_pform_psequence" value="<?php echo '_'.$this->print_counter; ?>" /><input type="hidden" name="<?php echo $this->prefix; ?>_pform_process" value="1" /><input type="hidden" name="<?php echo $this->prefix; ?>_id" value="<?php echo $this->item; ?>" /><input type="hidden" name="cp_ref_page" value="<?php esc_attr($this->get_site_url()); ?>" /><input type="hidden" name="form_structure<?php echo '_'.$this->print_counter; ?>" id="form_structure<?php echo '_'.$this->print_counter; ?>" size="180" value="<?php echo $raw_form_str; ?>" /><input type="hidden" name="refpage<?php echo '_'.$this->print_counter; ?>" id="refpage<?php echo '_'.$this->print_counter; ?>" value=""><input type="hidden" name="<?php echo $this->prefix; ?>_pform_status" value="0" /><?php if (count($preload_params)) { ?><input type="hidden" name="edititem" value="<?php echo $preload_params["itemnumber"]; ?>" /><?php } ?><input name="anonce" type="hidden" value="<?php echo wp_create_nonce( 'cfte_actions_emailform' ); ?>"/><input name="cftehp" id="cftehp<?php echo '_'.$this->print_counter; ?>" type="hidden" value="1"/>
 <?php if (is_admin() && !defined('APHOURBK_ELEMENTOR_EDIT_MODE') && (!isset($_GET["action"]) || $_GET["action"] != 'edit')) {?>
   <fieldset style="border: 1px solid black; -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding:15px;">
    <legend>Administrator options</legend>

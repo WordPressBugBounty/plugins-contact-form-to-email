@@ -507,6 +507,10 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
     public function admin_menu() {
         add_options_page($this->plugin_name.' Options', $this->plugin_name, 'manage_options', $this->menu_parameter, array($this, 'settings_page') );
         add_menu_page( $this->plugin_name.' Options', $this->plugin_name, 'edit_pages', $this->menu_parameter, array($this, 'settings_page') );
+        if (class_exists('CP_REFTRACK_Plugin'))
+            add_submenu_page( $this->menu_parameter, 'Referral report', 'Referral report', 'read', $this->menu_parameter."_reftracking", array($this, 'settings_page') );
+        else
+            add_submenu_page( $this->menu_parameter, 'Add Referral tracking', 'Add Referral tracking', 'read', $this->menu_parameter."_reftracking", array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Help: Online demo', 'Help: Online demo', 'read', $this->menu_parameter."_demo", array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Help: Documentation', 'Help: Documentation', 'read', $this->menu_parameter."_docs", array($this, 'settings_page') );
         add_submenu_page( $this->menu_parameter, 'Help: Free support', 'Help: Free support', 'read', $this->menu_parameter."_fsupport", array($this, 'settings_page') );
@@ -544,6 +548,14 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
             else
                 @include_once __DIR__ . '/cp-admin-int.inc.php';
         }
+        else if ($this->get_param("page") == $this->menu_parameter.'_reftracking')
+        {
+            if (class_exists('CP_REFTRACK_Plugin'))
+                echo("Redirecting to referral report...<script type='text/javascript'>document.location='?page=cp_reftrack';</script>");
+            else    
+                echo("Redirecting to referral add-on page...<script type='text/javascript'>document.location='https://wordpress.org/plugins/cp-referrer-and-conversions-tracking/';</script>");
+            exit;
+        }        
         else if ($this->get_param("page") == $this->menu_parameter.'_upgrade')
         {
             echo("Redirecting to upgrade page...<script type='text/javascript'>document.location='https://form2email.dwbooster.com/download';</script>");
