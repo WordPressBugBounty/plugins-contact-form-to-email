@@ -311,7 +311,7 @@ jQuery(window).on('load', function(){
 				reloadItems();
 			});
 			$("#sCsslayout").keyup(function(){
-				items[id].csslayout = $(this).val();
+				items[id].csslayout = htmlEncode($(this).val());
 				reloadItems();
 			});
 			$('.equalTo').each(function(){
@@ -778,7 +778,7 @@ jQuery(window).on('load', function(){
 				    return ((this.ftype!="fPageBreak")?showSettings.showUserhelp(this.userhelp,this.userhelpTooltip):"");
 				},
 				showCsslayout:function(){
-				    return ((this.ftype!="fPageBreak")?showSettings.showCsslayout(this.csslayout):"");
+				    return htmlEncode((this.ftype!="fPageBreak")?showSettings.showCsslayout(this.csslayout):"");
 				},
 				showAllSettings:function(){
 						return this.showTitle()+this.showName()+this.showSize()+this.showLayout()+this.showFormat()+this.showRange()+this.showRequired()+this.showSpecialData()+this.showEqualTo()+this.showPredefined()+this.showChoice()+this.showUserhelp()+this.showCsslayout();
@@ -823,7 +823,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input class="field disabled '+this.size+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field '+this.size+((this.required)?" required":"")+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field '+this.size+((this.required)?" required":"")+'" type="text" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
                     return '<div class="column"><label>Min length/characters</label><br /><input name="sMinlength" id="sMinlength" value="'+htmlEncode(this.minlength)+'"></div><div class="column"><label>Max length/characters</label><br /><input name="sMaxlength" id="sMaxlength" value="'+htmlEncode(this.maxlength)+'"></div><div class="clearer"></div>';
@@ -855,7 +855,7 @@ jQuery(window).on('load', function(){
 						label = '<a href="javascript:void(0);" class="cff-open-dlg">'+label+'</a>';
 						dlg += '<div class="cff-dialog hide"><span class="cff-close-dlg"></span><div class="cff-dialog-content">'+htmlEncode(me.message)+'</div></div>'
 					}
-					return '<div class="fields '+me.csslayout+' cff-checkbox-field" id="field'+me.identifier+'-'+me.index+'"><div class="dfield">'+
+					return '<div class="fields '+htmlEncode(me.csslayout)+' cff-checkbox-field" id="field'+me.identifier+'-'+me.index+'"><div class="dfield">'+
 					'<div class="one_column"><label><input name="'+me.name+'" id="'+me.name+'" class="field '+((this.required)?" required":"")+'" value="'+htmlEncode(me.value)+'" vt="'+htmlEncode((/^\s*$/.test(me.value)) ? me.title : me.value)+'" type="checkbox" /> <span>'+
 					htmlDecode( label )+''+((me.required)?'<span class="r">*</span>':'')+
 					'</span></label></div>'+
@@ -898,7 +898,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
                     return 'Not available in free version';
@@ -917,7 +917,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input class="field disabled '+this.size+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field email '+this.size+((this.required)?" required":"")+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><input id="'+this.name+'" name="'+this.name+'" '+((this.equalTo!="")?"equalTo=\"#"+htmlEncode(this.equalTo+opt.identifier)+"\"":"" )+' class="field email '+this.size+((this.required)?" required":"")+'" type="email" value="'+htmlEncode(this.predefined)+'"/><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
                     var str = "";
@@ -940,7 +940,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				showFormatIntance: function() {;
 					return '<div>Not available in free version</div>';
@@ -991,7 +991,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'"><div class="arrow ui-icon ui-icon-play "></div><div class="remove ui-icon ui-icon-trash "></div><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea class="field disabled '+this.size+'">'+htmlEncode(this.predefined)+'</textarea><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' class="field '+this.size+((this.required)?" required":"")+'">'+htmlEncode(this.predefined)+'</textarea><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+htmlEncode(this.title)+''+((this.required)?"*":"")+'</label><div class="dfield"><textarea id="'+this.name+'" name="'+this.name+'" '+((this.minlength!="")?" minlength=\""+parseInt(this.minlength)+"\"":"")+' '+((this.maxlength!="")?" maxlength=\""+parseInt(this.maxlength)+"\"":"")+' class="field '+this.size+((this.required)?" required":"")+'">'+htmlEncode(this.predefined)+'</textarea><span class="uh">'+htmlEncode(this.userhelp)+'</span></div><div class="clearer"></div></div>';
 				},
                 showSpecialDataInstance: function() {
                     return '<div class="column"><label>Min length/characters</label><br /><input name="sMinlength" id="sMinlength" value="'+htmlEncode(this.minlength)+'"></div><div class="column"><label>Max length/characters</label><br /><input name="sMaxlength" id="sMaxlength" value="'+htmlEncode(this.maxlength)+'"></div><div class="clearer"></div>';
@@ -1007,7 +1007,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				}
 		});
 		var fSectionBreak=function(){};
@@ -1019,7 +1019,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-                        return '<div class="fields '+this.csslayout+' section_breaks" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+                        return '<div class="fields '+htmlEncode(this.csslayout)+' section_breaks" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				}
 		});
 		var fPageBreak=function(){};
@@ -1030,7 +1030,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-                        return '<div class="fields '+this.csslayout+' section_breaks" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+                        return '<div class="fields '+htmlEncode(this.csslayout)+' section_breaks" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				}
 		});
 		var fPhone=function(){};
@@ -1044,7 +1044,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				showFormatIntance: function() {
 					return '<div>Not available in free version</div>';
@@ -1059,7 +1059,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-                        return '<div class="fields '+this.csslayout+' comment_area" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+                        return '<div class="fields '+htmlEncode(this.csslayout)+' comment_area" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				}
 		});
 		var fcheck=function(){};
@@ -1075,7 +1075,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				showChoiceIntance: function() {
 					return '<div class="choicesSet '+((this.showDep)?"show":"hide")+'">Not available in free version<div class="clearer"></div></div>'+str+'</div>';
@@ -1117,7 +1117,7 @@ jQuery(window).on('load', function(){
 					    }
 					    str += '<div class="'+this.layout+'"><input name="'+this.name+'" id="'+this.name+'" '+((classDep!="")?"dep=\""+attrDep+"\"":"")+' class="field depItem group '+((this.required)?" required":"")+'" value="'+htmlEncode(this.choicesVal[i])+'" type="radio" i="'+i+'"  '+((this.choicesVal[i]==this.choiceSelected)?"checked":"")+'/> <span>'+this.choices[i]+'</span></div>';
 					}
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield">'+str+'<span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'"><label>'+this.title+''+((this.required)?"*":"")+'</label><div class="dfield">'+str+'<span class="uh">'+this.userhelp+'</span></div><div class="clearer"></div></div>';
 				},
 				showChoiceIntance: function() {
 				    this.choicesVal = ((typeof(this.choicesVal) != "undefined" && this.choicesVal !== null)?this.choicesVal:this.choices.slice(0));
@@ -1158,7 +1158,7 @@ jQuery(window).on('load', function(){
 					return '<div class="fields" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				show:function(){
-					return '<div class="fields '+this.csslayout+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
+					return '<div class="fields '+htmlEncode(this.csslayout)+'" id="field'+opt.identifier+'-'+this.index+'">Not available in free version<div class="clearer"></div></div>';
 				},
 				showChoiceIntance: function() {
 					return '<div class="choicesSet '+((this.showDep)?"show":"hide")+'">Not available in free version<div class="clearer"></div></div>'+str+'</div>';

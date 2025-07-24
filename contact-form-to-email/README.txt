@@ -4,7 +4,7 @@ Donate link: https://form2email.dwbooster.com/download
 Tags: contact form,contact,email,contact form database,form
 Requires at least: 3.0.5
 Tested up to: 6.8
-Stable tag: 1.3.56
+Stable tag: 1.3.57
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -383,6 +383,9 @@ In other versions of the plugin the following field are also available: Numeric 
 8. Elementor integration
 
 == Changelog ==
+
+= 1.3.57 =
+* Cleaned CSS layout settings
 
 = 1.3.56 =
 * Referral tracking integrated
@@ -1151,5 +1154,5 @@ In other versions of the plugin the following field are also available: Numeric 
 
 == Upgrade Notice ==
 
-= 1.3.56 =
-* Referral tracking integrated
+= 1.3.57 =
+* Cleaned CSS layout settings
