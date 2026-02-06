@@ -3,12 +3,16 @@
 Plugin Name: Contact Form Email
 Plugin URI: https://form2email.dwbooster.com/download
 Description: Contact form that sends the data to email and also to a database list and CSV file.
-Version: 1.3.58
+Version: 1.3.63
 Author: CodePeople
 Author URI: https://form2email.dwbooster.com
 Text Domain: contact-form-to-email
-License: GPL
+License: GPLv2
 */
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if (!defined('CP_CFEMAIL_AUTH_INCLUDE')) define('CP_CFEMAIL_AUTH_INCLUDE',true);
 
 define('CP_CFEMAIL_DEFER_SCRIPTS_LOADING', (get_option('CP_CFTE_LOAD_SCRIPTS',"1") == "1"?true:false));
 
@@ -48,7 +52,7 @@ define('CP_CFEMAIL_DEFAULT_cv_max_font_size', '30');
 define('CP_CFEMAIL_DEFAULT_cv_noise', '190');
 define('CP_CFEMAIL_DEFAULT_cv_noise_length', '4');
 define('CP_CFEMAIL_DEFAULT_cv_background', 'ffffff');
-define('CP_CFEMAIL_DEFAULT_cv_border', '000000');
+define('CP_CFEMAIL_DEFAULT_cv_border', 'ffffff');
 define('CP_CFEMAIL_DEFAULT_cv_text_enter_valid_captcha', 'Please enter a valid captcha code.');
 
 
@@ -91,6 +95,7 @@ if ( is_admin() ) {
     add_action('admin_menu', array($cp_cfte_plugin,'admin_menu') );
     add_action('enqueue_block_editor_assets', array($cp_cfte_plugin,'gutenberg_block') );
     add_action('wp_loaded', array($cp_cfte_plugin, 'data_management_loaded') );
+    add_action('wp_ajax_run_email_diagnostic',  array($cp_cfte_plugin, 'handle_email_diagnostic_ajax') );
 } else {    
     add_shortcode( $cp_cfte_plugin->shorttag, array($cp_cfte_plugin, 'filter_content') );    
 }  
@@ -111,7 +116,7 @@ if (function_exists('register_block_type'))
                     )); 
 }
 
-$codepeople_promote_banner_plugins[ 'contact-form-to-email' ] = array( 'plugin_name' => 'Contact Form Email', 'plugin_url'  => 'https://wordpress.org/support/plugin/contact-form-to-email/reviews/?filter=5#new-post');
+$codepeople_promote_banner_plugins[ 'contact-form-to-email' ] = array( 'plugin_name' => 'Contact Form Email', 'plugin_url'  => 'https://wordpress.org/support/plugin/contact-form-to-email/reviews/?#new-post');
 require_once 'banner.php';
 
 // improve block
@@ -155,3 +160,23 @@ add_action( 'init', function(){
         return $v;
     }, 10, 5 );
 } );
+
+
+
+// Exclude from SiteGround Speed Optimizer JS Combination
+add_filter( 'sgo_javascript_combine_exclude', 'cfte_plugin_apphourbk_exclude_js_from_combination' );
+function cfte_plugin_apphourbk_exclude_js_from_combination( $exclude_list ) {
+    $exclude_list[] = 'cp_contactformtoemail_validate_script';
+    $exclude_list[] = 'cp_contactformtoemail_builder_script';
+    $exclude_list[] = 'cp_contactformtoemail_customjs';
+    return $exclude_list;
+}
+
+// Exclude from SiteGround Speed Optimizer JS Minification
+add_filter( 'sgo_js_minify_exclude', 'cfte_plugin_apphourbk_exclude_js_from_minification' );
+    function cfte_plugin_apphourbk_exclude_js_from_minification( $exclude_list ) {
+    $exclude_list[] = 'cp_contactformtoemail_validate_script';
+    $exclude_list[] = 'cp_contactformtoemail_builder_script';
+    $exclude_list[] = 'cp_contactformtoemail_customjs';
+    return $exclude_list;
+}

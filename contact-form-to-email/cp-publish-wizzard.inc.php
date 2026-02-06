@@ -1,5 +1,9 @@
 <?php 
 
+  if ( ! defined( 'ABSPATH' ) ) exit;
+
+  if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+
   if ( !is_admin() || !current_user_can('manage_options')) {echo 'Direct access not allowed.';exit;} 
 
   $nonce = wp_create_nonce( 'cpappb_actions_pwizard' );
@@ -128,8 +132,8 @@ if ($this->get_param('cp_contactformtoemail_do_action_loaded') == 'wizard') {
                        <br /> 
                        <h3 style="background:#cccccc; padding:5px;">Using classic WordPress editor or other editors?</h3>
                        
-                        <?php _e('You can also publish the form in a post/page, use the dedicated icon','cpappb'); ?> <?php echo '<img hspace="5" src="'.plugins_url('/images/cp_form.gif', __FILE__).'" alt="'.__('Insert '.$this->plugin_name).'" /></a>';     ?>
-                        <?php _e('which has been added to your Upload/Insert Menu, just below the title of your Post/Page', 'cpappb'); ?>
+                        <?php _e('You can also publish the form in a post/page, use the dedicated icon','contact-form-to-email'); ?> <?php echo '<img hspace="5" src="'.plugins_url('/images/cp_form.gif', __FILE__).'" alt="'.__('Insert '.$this->plugin_name,'contact-form-to-email').'" /></a>';     ?>
+                        <?php _e('which has been added to your Upload/Insert Menu, just below the title of your Post/Page', 'contact-form-to-email'); ?>
    
                          <!-- <select name="publishpage">
                          <?php 
@@ -208,10 +212,10 @@ function mvpublish_displayoption(sel) {
 </script>   
 
 <div id="metabox_basic_settings" class="postbox" >
-  <h3 class='hndle' style="padding:5px;"><span><?php _e('Note','cpappb'); ?></span></h3>
+  <h3 class='hndle' style="padding:5px;"><span><?php _e('Note','contact-form-to-email'); ?></span></h3>
   <div class="inside">
-   <?php _e('You can also publish the form in a post/page, use the dedicated icon','cpappb'); ?> <?php echo '<img hspace="5" src="'.plugins_url('/images/cp_form.gif', __FILE__).'" alt="'.__('Insert '.$this->plugin_name).'" /></a>';     ?>
-   <?php _e('which has been added to your Upload/Insert Menu, just below the title of your Post/Page or under the "+" icon if using the Gutemberg editor.','cpappb'); ?>
+   <?php _e('You can also publish the form in a post/page, use the dedicated icon','contact-form-to-email'); ?> <?php echo '<img hspace="5" src="'.plugins_url('/images/cp_form.gif', __FILE__).'" alt="'.__('Insert '.$this->plugin_name,'contact-form-to-email').'" /></a>';     ?>
+   <?php _e('which has been added to your Upload/Insert Menu, just below the title of your Post/Page or under the "+" icon if using the Gutemberg editor.','contact-form-to-email'); ?>
    <br /><br />
   </div>
 </div>

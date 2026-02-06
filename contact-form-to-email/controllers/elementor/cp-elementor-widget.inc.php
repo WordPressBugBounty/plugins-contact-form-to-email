@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 if (!class_exists('CP_ContactFormToEmail_Elementor'))
 {    
     class CP_ContactFormToEmail_Elementor {
@@ -47,7 +49,7 @@ if (!class_exists('CP_ContactFormToEmail_Elementor'))
       function register_widget_category( $elements_manager ) {
           $elements_manager->add_category(
                                           'codepeople-widgets', array(
-                                          'title' => __('CodePeople', 'codepeople-builder'),
+                                          'title' => __('CodePeople', 'contact-form-to-email'),
                                           'icon' => 'fa fa-envelope',
                                           ));
       }

@@ -88,21 +88,7 @@ if ($random_text_color)
   $tcolor = cpcff_decodeColor($selcolor);
 }    
 
-$text_col = imagecolorallocate($image, $tcolor["r"],$tcolor["g"],$tcolor["b"]);
-    
-imagefilledrectangle($image, 0, 0, $imgX, $imgY, $backgr_col);
-imagerectangle($image, 0, 0, $imgX-1, $imgY-1, $border_col);
-for ($i=0;$i<$noise;$i++)
-{
-  if ($random_noise_color)
-      $color = mt_rand(0, 256*256*256);
-  else
-      $color = $noisecolor;
-  $x1 = mt_rand(2,$imgX-2);
-  $y1 = mt_rand(2,$imgY-2);
-  imageline ( $image, $x1, $y1, mt_rand($x1-$noiselength,$x1+$noiselength), mt_rand($y1-$noiselength,$y1+$noiselength), $color);
-}  
-
+$text_col = imagecolorallocate($image, $tcolor["r"],$tcolor["g"],$tcolor["b"]);   
 
 switch (@$_GET["font"]) {
     case "font-2.ttf":
@@ -123,37 +109,66 @@ switch (@$_GET["font"]) {
 
 $font = dirname( __FILE__ ) . "/". $selected_font;
 
-$font_size = rand($min_size, $max_size);
-  
-$angle = rand(-15, 15);
+// 1. Create Image and Colors
+$image = imagecreatetruecolor($imgX, $imgY);
+imagealphablending($image, true);
+imagesavealpha($image, true);
 
-if (function_exists("imagettfbbox") && function_exists("imagettftext"))
-{
-    $box = imagettfbbox($font_size, $angle, $font, $str);
-    $x = (int)($imgX - $box[4]) / 2;
-    $y = (int)($imgY - $box[5]) / 2;
-    imagettftext($image, $font_size, $angle, $x, $y, $text_col, $font, $str);
-} 
-else if (function_exists("imageFtBBox") && function_exists("imageFTText"))
-{
-    $box = imageFtBBox($font_size, $angle, $font, $str);
-    $x = (int)($imgX - $box[4]) / 2;
-    $y = (int)($imgY - $box[5]) / 2;
-    imageFTText ($image, $font_size, $angle, $x, $y, $text_col, $font, $str);	
-}
-else
-{
-    $angle = 0;
-    $font = 6;
-    $wf = ImageFontWidth(6) * strlen($str); 
-    $hf = ImageFontHeight(6);
-    $x = (int)($imgX - $wf) / 2;
-    $y = (int)($imgY - $hf) / 2;
-    imagestring ( $image, $font, $x, $y, $str, $text_col);	
+$bgColor = imagecolorallocate($image, $bcolor['r'], $bcolor['g'], $bcolor['b']);
+$borderColor = imagecolorallocate($image, $border['r'], $border['g'], $border['b']);
+imagefill($image, 0, 0, $bgColor);
+
+// 1. Setup Margins
+$leftPadding = 15;  // Explicit safe zone for the first character
+$rightPadding = 15; // Safe zone for the last character
+$availableWidth = $imgX - ($leftPadding + $rightPadding);
+
+$charArray = str_split($str);
+$totalChars = count($charArray);
+$cellWidth = $availableWidth / $totalChars;
+
+// 2. Decorative Background Noise
+for ($i = 0; $i < 6; $i++) {
+    $shapeAlpha = imagecolorallocatealpha($image, rand(220, 245), rand(220, 245), rand(220, 245), 90);
+    imagefilledellipse($image, rand(0, $imgX), rand(0, $imgY), rand(20, $imgX), rand(20, $imgY), $shapeAlpha);
 }
 
-header("Content-type: image/png");
+// 3. Render Characters with Safe Positioning
+foreach ($charArray as $i => $char) {
+    $fontSize = rand($min_size, $max_size);
+    $angle = rand(-10, 10);
+    
+    $bbox = imagettfbbox($fontSize, $angle, $font, $char);
+    
+    // Calculate dimensions from bounding box
+    $charWidth = abs($bbox[4] - $bbox[0]);
+    $charHeight = abs($bbox[5] - $bbox[1]);
+
+    // X = Base padding + (index * cell width) + centering within that cell
+    $x = $leftPadding + ($i * $cellWidth) + ($cellWidth - $charWidth) / 2;
+    
+    // Y = Centered vertically with a slight random jitter for modern feel
+    $y = ($imgY / 2) + ($charHeight / 2) - rand(-2, 2);
+
+    $textColor = imagecolorallocatealpha($image, rand(40, 70), rand(40, 70), rand(80, 110), 0);
+    
+    imagettftext($image, $fontSize, $angle, $x, $y, $textColor, $font, $char);
+}
+
+// 4. Fine Grain Noise
+for ($i = 0; $i < $noise; $i++) {
+    $noiseColor = imagecolorallocatealpha($image, 80, 80, 80, rand(90, 110));
+    $x1 = rand(0, $imgX);
+    $y1 = rand(0, $imgY);
+    // Using noiselength to define the sprawl of the noise dots/lines
+    imageline($image, $x1, $y1, $x1 + rand(1, $noiselength), $y1 + rand(1, $noiselength), $noiseColor);
+}
+
+// 5. Border and Output
+imagerectangle($image, 0, 0, $imgX - 1, $imgY - 1, $borderColor);
+
+header('Content-Type: image/png');
 imagepng($image);
-imagedestroy ($image);
+imagedestroy($image);
 exit;
 ?>

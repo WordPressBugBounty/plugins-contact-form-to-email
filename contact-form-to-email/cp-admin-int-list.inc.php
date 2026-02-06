@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+ 
 if ( !is_admin() ) 
 {
     echo 'Direct access not allowed.';
@@ -35,7 +39,7 @@ if (isset($_GET['a']) && $_GET['a'] == '1')
     $wpdb->insert( $wpdb->prefix.$this->table_items, array( 
                                       'form_name' => stripcslashes(sanitize_text_field($_GET["name"])),
 
-                                      'form_structure' => $this->get_option('form_structure', CP_CFEMAIL_DEFAULT_form_structure),
+                                      'form_structure' => CP_CFEMAIL_DEFAULT_form_structure,
 
                                       'fp_from_email' => $this->get_option('fp_from_email', CP_CFEMAIL_DEFAULT_fp_from_email),
                                       'fp_destination_emails' => $this->get_option('fp_destination_emails', CP_CFEMAIL_DEFAULT_fp_destination_emails),
@@ -263,10 +267,10 @@ $nonce = wp_create_nonce( 'cfte_update_actions_plist' );
                              <input style="margin-bottom:3px" class="button" type="button" name="calupdate_<?php echo intval($item->id); ?>" value="Rename" onclick="cp_updateItem(<?php echo intval($item->id); ?>);" /> 
                              <input style="margin-bottom:3px" class="button-primary button" type="button" name="calmanage_<?php echo intval($item->id); ?>" value="Edit &amp; Settings" onclick="cp_manageSettings(<?php echo intval($item->id); ?>);" /> 
                              <?php if (current_user_can('manage_options')) { ?>
-                             <input style="margin-bottom:3px" class="button-primary button" type="button" name="calpublish_<?php echo intval($item->id); ?>" value="<?php _e('Publish','cpappb'); ?>" onclick="cp_publish(<?php echo intval($item->id); ?>);" />                              
+                             <input style="margin-bottom:3px" class="button-primary button" type="button" name="calpublish_<?php echo intval($item->id); ?>" value="<?php _e('Publish','contact-form-to-email'); ?>" onclick="cp_publish(<?php echo intval($item->id); ?>);" />                              
                              <?php } ?>
                              <input style="margin-bottom:3px" class="button" type="button" name="calmessages_<?php echo intval($item->id); ?>" value="Messages" onclick="cp_viewMessages(<?php echo intval($item->id); ?>);" />
-                             <input style="margin-bottom:5px;" class="button" type="button" name="caladdbk_<?php echo intval($item->id); ?>" value="<?php _e('Add Message','appointment-hour-booking'); ?>" onclick="cp_addbk(<?php echo intval($item->id); ?>);" />                             
+                             <input style="margin-bottom:5px;" class="button" type="button" name="caladdbk_<?php echo intval($item->id); ?>" value="<?php _e('Add Message','contact-form-to-email'); ?>" onclick="cp_addbk(<?php echo intval($item->id); ?>);" />                             
                              <input style="margin-bottom:3px" class="button" type="button" name="calreport_<?php echo intval($item->id); ?>" value="Stats" onclick="cp_viewReport(<?php echo intval($item->id); ?>);" />                            
                              <input style="margin-bottom:3px" class="button" type="button" name="calclone_<?php echo intval($item->id); ?>" value="Clone" onclick="cp_cloneItem(<?php echo intval($item->id); ?>);" />                             
                              <input style="margin-bottom:3px" class="button" type="button" name="caldelete_<?php echo intval($item->id); ?>" value="Delete" onclick="cp_deleteItem(<?php echo intval($item->id); ?>);" />                             
@@ -324,6 +328,10 @@ $nonce = wp_create_nonce( 'cfte_update_actions_plist' );
     
     <fieldset class="cpfieldset"><legend>Improvements</legend>
     <div><label onclick="window.open('https://form2email.dwbooster.com/download');" for="addon-cfficalattachment-20180730" style="font-weight:bold;"><input type="checkbox" disabled id="addon-cfficalattachment-20180730" name="cfte_addons" value="addon-cfficalattachment-20180730" >iCal Export Attached</label> <div style="font-style:italic;padding-left:20px;">The add-on allows to attach an iCal file with the date of a field</div></div><div>
+    
+    
+    <label onclick="window.open('https://form2email.dwbooster.com/download');" for="addon-uploads-20161234" style="font-weight:bold;"><input type="checkbox" disabled id="addon-attar-20160330" name="cfte_addons" value="addon-uploads-20161234" >Attach Files to Autoreply</label> <div style="font-style:italic;padding-left:20px;">The add-on allows to attach files to notification emails</div></div><div>    
+    
     <label onclick="window.open('https://form2email.dwbooster.com/download');" for="addon-uploads-20160330" style="font-weight:bold;"><input type="checkbox" disabled id="addon-uploads-20160330" name="cfte_addons" value="addon-uploads-20160330" >Uploads</label> <div style="font-style:italic;padding-left:20px;">The add-on allows to add the uploaded files to the Media Library, and the support for new mime types</div></div><div>    
     <label onclick="window.open('https://form2email.dwbooster.com/download');" for="addon-signature-20171025" style="font-weight:bold;"><input type="checkbox" disabled id="addon-signature-20171025" name="cfte_addons" value="addon-signature-20171025">Signature Fields</label> <div style="font-style:italic;padding-left:20px;">The add-on allows to replace form fields with "Signature" fields</div></div><div>    
     <label onclick="window.open('https://form2email.dwbooster.com/download');" for="addon-coupons-20171025" style="font-weight:bold;"><input type="checkbox" disabled id="addon-coupons-20171025" name="cfte_addons" value="addon-coupons-20171025">Coupon Codes</label> <div style="font-style:italic;padding-left:20px;">The add-on adds support for coupons / discounts codes for payments</div></div> <div>    

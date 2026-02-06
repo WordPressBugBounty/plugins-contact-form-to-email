@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+
 if ( !is_admin() ) 
 {
     echo 'Direct access not allowed.';
@@ -38,7 +42,7 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
 
 </script>
 <div class="wrap">
-<h1><?php esc_html_e('Edit','cfte'); ?> - <?php echo esc_html($this->get_option('form_name','Contact Form')); ?> - <?php echo esc_html($this->plugin_name); ?></h1>
+<h1><?php esc_html_e('Edit','contact-form-to-email'); ?> - <?php echo esc_html($this->get_option('form_name','Contact Form')); ?> - <?php echo esc_html($this->plugin_name); ?></h1>
 
 
 <form method="post" action="" name="cpformconf"> 
@@ -48,8 +52,8 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
 
 
 <div id="topadminsection"  class="ahb-buttons-container">
-	<input type="submit" class="button button-primary ahb-save-btn" name="savereturn" value="<?php esc_html_e('Save Changes and Return','cfte'); ?>"  />
-	<a href="<?php print esc_attr(admin_url('admin.php?page='.$this->menu_parameter));?>" class="ahb-return-link">&larr;<?php esc_html_e('Return to the contact forms list','cfte'); ?></a>
+	<input type="submit" class="button button-primary ahb-save-btn" name="savereturn" value="<?php esc_html_e('Save Changes and Return','contact-form-to-email'); ?>"  />
+	<a href="<?php print esc_attr(admin_url('admin.php?page='.$this->menu_parameter));?>" class="ahb-return-link">&larr;<?php esc_html_e('Return to the contact forms list','contact-form-to-email'); ?></a>
 	<div class="clear"></div>
 </div>
 
@@ -58,27 +62,27 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
 	<div class="ahb-breadcrumb">
 		<div class="ahb-step ahb-step-active" data-step="1">
 			<i>1</i>
-			<label><?php esc_html_e('Email Settings','cfte'); ?></label>
+			<label><?php esc_html_e('Email Settings','contact-form-to-email'); ?></label>
 		</div>
 		<div class="ahb-step" data-step="2">
 			<i>2</i>
-			<label><?php esc_html_e('Form Builder','cfte'); ?></label>
+			<label><?php esc_html_e('Form Builder','contact-form-to-email'); ?></label>
 		</div>
 		<div class="ahb-step" data-step="3">
 			<i>3</i>
-			<label><?php esc_html_e('Autoreply to Customer','cfte'); ?></label>
+			<label><?php esc_html_e('Autoreply to Customer','contact-form-to-email'); ?></label>
 		</div>
         <div class="ahb-step" data-step="4">
 			<i>4</i>
-			<label><?php esc_html_e('Texts','cfte'); ?></label>
+			<label><?php esc_html_e('Texts','contact-form-to-email'); ?></label>
 		</div>        
 		<div class="ahb-step" data-step="5">
 			<i>5</i>
-			<label><?php esc_html_e('Antispam','cfte'); ?></label>
+			<label><?php esc_html_e('Antispam','contact-form-to-email'); ?></label>
 		</div>
 		<div class="ahb-step" data-step="6">
 			<i>6</i>
-			<label><?php esc_html_e('Reports','cfte'); ?></label>
+			<label><?php esc_html_e('Reports','contact-form-to-email'); ?></label>
 		</div>
 	</div>
 
@@ -102,10 +106,10 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
             option isn't recommended in most cases.
             </span>
         </td>
-        </tr>       
+        </tr>           
         <tr valign="top">
         <th scope="row">"From" email</th>
-        <td><input required type="text" name="fp_from_email" size="40" value="<?php echo esc_attr($this->get_option('fp_from_email', CP_CFEMAIL_DEFAULT_fp_from_email)); ?>" /><br />
+        <td><input required type="text" name="fp_from_email" id="fp_from_email" size="40" value="<?php echo esc_attr($this->get_option('fp_from_email', CP_CFEMAIL_DEFAULT_fp_from_email)); ?>" /><br />
         <span style="font-size:10px;color:#666666">
             * Email used as "from". Example: admin@<?php echo str_replace('www.','',$_SERVER["HTTP_HOST"]); ?> 
          </span>
@@ -113,12 +117,63 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
         </tr>             
         <tr valign="top">
         <th scope="row">Destination/administrator email</th>
-        <td><input required type="text" name="fp_destination_emails" size="40" value="<?php echo esc_attr($this->get_option('fp_destination_emails', CP_CFEMAIL_DEFAULT_fp_destination_emails)); ?>" /><br />
+        <td><input required type="text" name="fp_destination_emails" id="fp_destination_emails" size="40" value="<?php echo esc_attr($this->get_option('fp_destination_emails', CP_CFEMAIL_DEFAULT_fp_destination_emails)); ?>" /><br />
          <span style="font-size:10px;color:#666666">
             * Email that will receive the notification. Comma separated for multiple emails.
          </span>
          </td>
         </tr>
+        
+        <tr>
+         <td>
+         </td>
+         <td>
+     
+                <button id="run-diagnostic-btn" class="button button-primary">Run Diagnostic & Send Test</button>
+                <span id="diag-loader" class="spinner" style="float:none;"></span>
+
+                <div id="diagnostic-results-container" style="margin-top: 20px;"></div>
+
+            
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#run-diagnostic-btn').on('click', function(e) {
+        e.preventDefault();
+        
+        var fromEmail = $('#fp_from_email').val();
+        var toEmail = $('#fp_destination_emails').val();
+        var $results = $('#diagnostic-results-container');
+        var $loader = $('#diag-loader');
+
+        if(!toEmail) { alert('Please enter a destination email.'); return; }
+
+        $loader.addClass('is-active');
+        $results.fadeOut();
+
+        $.ajax({
+            url: ajaxurl, // Standard WP global
+            type: 'POST',
+            data: {
+                action: 'run_email_diagnostic',
+                nonce: '<?php echo wp_create_nonce("email_diag_nonce"); ?>',
+                from_email: fromEmail,
+                to_email: toEmail
+            },
+            success: function(response) {
+                $loader.removeClass('is-active');
+                if(response.success) {
+                    $results.html(response.data.html).fadeIn();
+                } else {
+                    $results.html('<div class="notice notice-error"><p>' + response.data + '</p></div>').fadeIn();
+                }
+            }
+        });
+    });
+});
+</script>
+            
+         </td>
+        </tr>         
         
         <tr>
          <td colspan="2">
@@ -130,7 +185,9 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
                at external servers and reach to the spam folder or are completely blocked. This isn't a mandatory requirement but it is strongly recommended.</p>       
             </div>
          </td>
-        </tr>     
+        </tr>    
+        
+
         
         <tr><td colspan="2"><hr /></td></tr>
         
@@ -199,9 +256,9 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
      
   </div>   
   		<div class="ahb-buttons-container">
-			<input type="button" value="<?php esc_html_e('Next Step - Editor >','cfte'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(2);" />
-			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
-			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="button" value="<?php esc_html_e('Next Step - Editor >','contact-form-to-email'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(2);" />
+			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
 			<div class="clear"></div>
 		</div>
  </div>   
@@ -363,9 +420,9 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
    
   </div>  
     	<div class="ahb-buttons-container">
-			<input type="button" value="<?php esc_html_e('Next Step - Autoreply to Customer >','cfte'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(3);" />
-			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
-			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="button" value="<?php esc_html_e('Next Step - Autoreply to Customer >','contact-form-to-email'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(3);" />
+			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
 			<div class="clear"></div>
 		</div>
  </div> 
@@ -443,9 +500,9 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
   </div>    
  </div>   
   		<div class="ahb-buttons-container">
-			<input type="button" value="<?php esc_html_e('Next Step - Antispam >','cfte'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(5);" />
-			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
-			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="button" value="<?php esc_html_e('Next Step - Antispam >','contact-form-to-email'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(5);" />
+			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
 			<div class="clear"></div>
 		</div> 
  </div>
@@ -489,9 +546,9 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
      </table>  
   </div> 
   		<div class="ahb-buttons-container">
-			<input type="button" value="<?php esc_html_e('Next Step - Texts >','cfte'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(4);" />
-			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
-			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="button" value="<?php esc_html_e('Next Step - Texts >','contact-form-to-email'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(4);" />
+			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
 			<div class="clear"></div>
 		</div>  
  </div>  
@@ -581,9 +638,9 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
      </table>  
   </div>   
   		<div class="ahb-buttons-container">
-			<input type="button" value="<?php esc_html_e('Next Step - Reports >','cfte'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(6);" />
-			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
-			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="button" value="<?php esc_html_e('Next Step - Reports >','contact-form-to-email'); ?>" class="button" style="float:right;margin-right:10px" onclick="ahbGoToStep(6);" />
+			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
 			<div class="clear"></div>
 		</div>  
  </div>    
@@ -647,8 +704,8 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
      </table>  
   </div>   
 		<div class="ahb-buttons-container">
-			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
-			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','cfte'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savepublish" value="<?php esc_html_e('Save and Publish','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
+			<input type="submit" name="savereturn" value="<?php esc_html_e('Save and Return','contact-form-to-email'); ?>" class="button button-primary" style="float:right;margin-right:10px" />
 			<div class="clear"></div>
 		</div>  
  </div>   
@@ -657,7 +714,7 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_POST[$this->prefix.'_post_
 
 
  <div class="ahb-buttons-container">
-	<a href="<?php print esc_attr(admin_url('admin.php?page='.$this->menu_parameter));?>" class="ahb-return-link">&larr;<?php esc_html_e('Return to the contact forms list','cfte'); ?></a>
+	<a href="<?php print esc_attr(admin_url('admin.php?page='.$this->menu_parameter));?>" class="ahb-return-link">&larr;<?php esc_html_e('Return to the contact forms list','contact-form-to-email'); ?></a>
  </div>
 
 

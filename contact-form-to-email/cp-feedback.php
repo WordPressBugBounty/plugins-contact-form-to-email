@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+ 
 add_action('admin_enqueue_scripts', 'cfte_feedback_insert_adminScripts', 1); 
 add_action( 'wp_ajax_cpcfte_feedback', 'cpcfte_feedback' );
 

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+ 
 $this->item = intval($_GET["cal"]);
 
 $current_user = wp_get_current_user();

@@ -1,4 +1,8 @@
-<?php if ( !defined('CP_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+<?php 
+
+  if ( ! defined( 'ABSPATH' ) ) exit;
+
+  if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
 
   if (!is_admin()) {
       $full_url = get_permalink();
@@ -41,7 +45,7 @@
 <?php } ?>
 </div>
 </div>
-<div id="cp_subbtn<?php echo '_'.$this->print_counter; ?>" class="cp_subbtn"><?php esc_html_e($button_label); ?></div>
+<div id="cp_subbtn<?php echo '_'.$this->print_counter; ?>" class="cp_subbtn"><?php esc_html_e($button_label,'contact-form-to-email'); ?></div>
 </form>
 <script>
 try{document.getElementById("cftehp<?php echo '_'.$this->print_counter; ?>").value="25";}catch(e){}

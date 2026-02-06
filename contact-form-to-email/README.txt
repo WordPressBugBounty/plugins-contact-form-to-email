@@ -3,9 +3,9 @@ Contributors: codepeople
 Donate link: https://form2email.dwbooster.com/download
 Tags: contact form,contact,email,contact form database,form
 Requires at least: 3.0.5
-Tested up to: 6.8
-Stable tag: 1.3.58
-License: GPLv2 or later
+Tested up to: 6.9
+Stable tag: 1.3.63
+License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Contact form with visual form builder. Contact form that sends the data to email, to a database list and to CSV / Excel files. 
@@ -122,6 +122,10 @@ To install Contact Form to Email, follow these steps:
 5.	To insert the contact form into some content or post use the icon that will appear when editing contents
 
 == Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/b5999dcd-5fdc-4659-bd6c-8739770b7b7f). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 = Q: How can I add specific fields into the email message? =
 
@@ -379,10 +383,25 @@ In other versions of the plugin the following field are also available: Numeric 
 4. contact form validation settings
 5. Inserting a contact form into a page
 6. Built-in captcha image anti-spam protection
-7. New Wordpress Editor (Gutemberg) integration
+7. Form builder
 8. Elementor integration
 
 == Changelog ==
+
+= 1.3.63 =
+* New modern Captcha and Email Deliverability Diagnostic 
+
+= 1.3.62 =
+* Siteground SG Speed Optimizer compatibility
+
+= 1.3.61 =
+* Security improvements
+
+= 1.3.60 =
+* Compatible with WP 6.9
+
+= 1.3.59 =
+* Prefill option update
 
 = 1.3.58 =
 * Cloudflare / Cloud Flare Turnstile and Flow.cl add-ons
@@ -1157,5 +1176,5 @@ In other versions of the plugin the following field are also available: Numeric 
 
 == Upgrade Notice ==
 
-= 1.3.58 =
-* Cloudflare / Cloud Flare Turnstile and Flow.cl add-ons
+= 1.3.63 =
+* New modern Captcha and Email Deliverability Diagnostic 

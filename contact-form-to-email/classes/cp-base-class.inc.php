@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 if( !class_exists( 'CP_CFTEMAIL_BaseClass' ) ) {         
     
 class CP_CFTEMAIL_BaseClass {       

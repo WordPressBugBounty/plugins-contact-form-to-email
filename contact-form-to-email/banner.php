@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( !defined('CP_CFEMAIL_AUTH_INCLUDE') ) { echo 'Direct access not allowed.'; exit; } 
+ 
 global $codepeople_promote_banner_plugins;
 if(empty($codepeople_promote_banner_plugins)) $codepeople_promote_banner_plugins = array();
 if(!function_exists( 'codepeople_add_promote_banner' ))
