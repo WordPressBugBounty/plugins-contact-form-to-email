@@ -530,29 +530,8 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
 
     public function settings_page() {
         global $wpdb;
-        if ($this->get_param("cal") || $this->get_param("cal") == '0' || $this->get_param("pwizard") == '1')
-        {
-            $this->item = intval($this->get_param("cal"));
-            if (isset($_GET["edit"]) && $_GET["edit"] == '1')
-                @include_once __DIR__ . '/cp_admin_int_edition.inc.php';
-            else if ($this->get_param("list") == '1')
-                @include_once __DIR__ . '/cp-admin-int-message-list.inc.php';
-            else if ($this->get_param("edititem"))
-                @include_once __DIR__ . '/cp-admin-int-edit-booking.inc.php';            
-            else if ($this->get_param("addbk") == '1')
-                @include_once __DIR__ . '/cp-admin-int-add-booking.inc.php';
-            else if ($this->get_param("report") == '1')
-                @include_once __DIR__ . '/cp-admin-int-report.inc.php';
-            else if ($this->get_param("pwizard") == '1')
-            {
-                if ($this->get_param("cal"))
-                    $this->item = intval($this->get_param("cal"));
-                @include_once __DIR__ . '/cp-publish-wizzard.inc.php';
-            }
-            else
-                @include_once __DIR__ . '/cp-admin-int.inc.php';
-        }
-        else if ($this->get_param("page") == $this->menu_parameter.'_reftracking')
+        
+        if ($this->get_param("page") == $this->menu_parameter.'_reftracking')
         {
             if (class_exists('CP_REFTRACK_Plugin'))
                 echo("Redirecting to referral report...<script type='text/javascript'>document.location='?page=cp_reftrack';</script>");
@@ -579,6 +558,28 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
         {
             echo("Redirecting to demo page...<script type='text/javascript'>document.location='https://wordpress.org/support/plugin/contact-form-to-email#new-post';</script>");
             exit;
+        } 
+        else if ($this->get_param("cal") || $this->get_param("cal") == '0' || $this->get_param("pwizard") == '1')
+        {
+            $this->item = intval($this->get_param("cal"));
+            if (isset($_GET["edit"]) && $_GET["edit"] == '1')
+                @include_once __DIR__ . '/cp_admin_int_edition.inc.php';
+            else if ($this->get_param("list") == '1')
+                @include_once __DIR__ . '/cp-admin-int-message-list.inc.php';
+            else if ($this->get_param("edititem"))
+                @include_once __DIR__ . '/cp-admin-int-edit-booking.inc.php';            
+            else if ($this->get_param("addbk") == '1')
+                @include_once __DIR__ . '/cp-admin-int-add-booking.inc.php';
+            else if ($this->get_param("report") == '1')
+                @include_once __DIR__ . '/cp-admin-int-report.inc.php';
+            else if ($this->get_param("pwizard") == '1')
+            {
+                if ($this->get_param("cal"))
+                    $this->item = intval($this->get_param("cal"));
+                @include_once __DIR__ . '/cp-publish-wizzard.inc.php';
+            }
+            else
+                @include_once __DIR__ . '/cp-admin-int.inc.php';
         }
         else
             @include_once __DIR__ . '/cp-admin-int-list.inc.php';
