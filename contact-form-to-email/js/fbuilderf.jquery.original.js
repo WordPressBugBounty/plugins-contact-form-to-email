@@ -1224,7 +1224,13 @@ jQuery(window).on('load', function(){
 			   if (d.length==2)
 			   {
 				   items = new Array();
+                   const allowedTypes = [
+                      "ftext", "fnumber", "femail", "fdate", "ftextarea", "fcheck", 
+                      "fradio", "fdropdown", "ffile", "fpassword", "fPhone", 
+                      "fCommentArea", "fSectionBreak", "fPageBreak"
+                    ];
 				   for (var i=0;i<d[0].length;i++)
+                       if (allowedTypes.includes(d[0][i].ftype))
 				   {
 					   var obj = eval("new "+d[0][i].ftype+"();");
 					   obj = $.extend(obj,d[0][i]);
