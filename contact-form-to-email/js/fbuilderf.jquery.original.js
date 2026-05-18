@@ -1227,16 +1227,16 @@ jQuery(window).on('load', function(){
                    const allowedTypes = [
                       "ftext", "fnumber", "femail", "fdate", "ftextarea", "fcheck", 
                       "fradio", "fdropdown", "ffile", "fpassword", "fPhone", 
-                      "fCommentArea", "fSectionBreak", "fPageBreak"
+                      "fCommentArea", "fSectionBreak", "fPageBreak","facceptance"
                     ];
 				   for (var i=0;i<d[0].length;i++)
                        if (allowedTypes.includes(d[0][i].ftype))
-				   {
-					   var obj = eval("new "+d[0][i].ftype+"();");
-					   obj = $.extend(obj,d[0][i]);
-					   obj.name = obj.name+opt.identifier;
-					   items[items.length] = obj;
-				   }
+                       {
+                           var obj = eval("new "+d[0][i].ftype+"();");
+                           obj = $.extend(obj,d[0][i]);
+                           obj.name = obj.name+opt.identifier;
+                           items[items.length] = obj;
+                       }
 				   theForm = new fform();
 				   theForm = $.extend(theForm,d[1][0]);
 				   if (opt.pub)
