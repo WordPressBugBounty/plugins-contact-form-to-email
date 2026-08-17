@@ -614,7 +614,57 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
 
 
     public function render_form_admin ($atts) {
-        $is_gutemberg_editor = defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context'];
+        global $wpdb;
+        
+        // 1. Check if formId is set. If not, bail early.
+        if ( empty( $atts['formId'] ) ) {
+            return __( 'Please select a contact form.', 'contact-form-to-email' );
+        }
+
+        $form_id = intval( $atts['formId'] );
+
+        // 2. Run the query ONCE, and only select the ID to save memory.    
+        $table_name = $wpdb->prefix . 'cftemail_forms';
+        $myrows = $wpdb->get_results( 
+            $wpdb->prepare( "SELECT id FROM {$table_name} WHERE id = %d", $form_id ) 
+        );
+
+        // If the form doesn't exist in the DB, bail early.
+        if ( empty( $myrows ) ) {
+            return __( 'Please select a contact form.', 'contact-form-to-email' );
+        }
+
+        // 3. Determine if we are inside the Gutenberg Editor via the REST API
+        $is_gutenberg_editor = defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context'];
+
+        // 4. Handle Frontend Output
+        if ( ! $is_gutenberg_editor ) {
+            return $this->filter_content( array( 'id' => $form_id ) );
+        }
+
+        // 5. Handle Editor Output
+        $this->setId( $form_id );
+
+        // Prevent PHP warning if instanceId is missing
+        $instance_id = ! empty( $atts['instanceId'] ) ? $atts['instanceId'] : wp_rand( 10000, 99999 );
+        $escaped_id  = esc_attr( $instance_id );
+
+        // Clean up the form structure string
+        $form_structure = esc_attr( $this->get_option( 'form_structure' ) );
+        $form_structure = str_replace( array( "\r", "\n" ), '', $form_structure );
+
+        // Use sprintf for a clean, readable HTML template
+        return sprintf(
+            '<div style="padding: 30px 20px; border: 2px dashed #c3c4c7; background-color: #f6f7f7; border-radius: 8px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif;">
+                <span style="font-size: 32px; display: block; margin-bottom: 12px;">✅</span>
+                <strong style="font-size: 16px; color: #1d2327; display: block; margin-bottom: 8px;">%1$s</strong>
+                <span style="font-size: 14px; color: #50575e;">%2$s</span>
+            </div>',
+            esc_html__( 'OK, contact form selected. Great!', 'contact-form-to-email' ),
+            esc_html__( 'The contact form will appear here when viewed in the public website.', 'contact-form-to-email' )
+        );
+        
+        /**$is_gutemberg_editor = defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context'];
         if (!$is_gutemberg_editor)
             return $this->filter_content (array('id' => $atts["formId"]));
         else if ($atts["formId"])
@@ -624,6 +674,7 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
         }
         else
             return __('Contact form inserted. <b>Save and reload this page</b> to render the contact form.','contact-form-to-email');
+        */
     }
 
 
