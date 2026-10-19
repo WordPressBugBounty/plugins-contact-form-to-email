@@ -450,15 +450,15 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
                             $object->predefinedClick = 0;
                             
                             
-                        $form_data[ 0 ][ $key ] = $object;
-                        $raw_form_str = json_encode( $form_data );
+                        $form_data[ 0 ][ $key ] = $object;                        
                     }
         		}
+                $raw_form_str = wp_json_encode( $form_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS );
         	}
         	
         }
         
-        $raw_form_str = str_replace('"','&quot;',esc_attr($raw_form_str));
+        $raw_form_str = htmlspecialchars( $raw_form_str, ENT_QUOTES, 'UTF-8', true );
         // END:: code to load form settings
         
         @include __DIR__ . '/cp-public-int.inc.php';
@@ -865,9 +865,12 @@ class CP_ContactFormToEmail extends CP_CFTEMAIL_BaseClass {
         
         
 
-        //if (get_magic_quotes_gpc())
-            foreach ($_POST as $item => $value)
-                $_POST[$item] = (is_array($value)?$value:stripcslashes($value));
+        foreach ( $_POST as $item => $value ) {
+            $unslashed = wp_unslash( $value );
+            $_POST[ $item ] = is_array( $unslashed )
+                ? array_map( 'sanitize_textarea_field', $unslashed )
+                : sanitize_textarea_field( $unslashed );
+        }
 
         // get form info
         //---------------------------

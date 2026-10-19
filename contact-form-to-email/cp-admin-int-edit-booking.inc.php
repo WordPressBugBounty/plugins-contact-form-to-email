@@ -40,7 +40,7 @@ $nonce = wp_create_nonce( 'cfte_actions_admin' );
 
 <p><?php _e('This page is for editing messages from the administration area. The captcha and payment process are disabled in order to allow the website manager easily editing bookings.','contact-form-to-email'); ?></p> 
 
-<?php echo $this->filter_content(array('id' => $this->item, 'prefill' => $_GET["edititem"])); ?>
+<?php echo $this->filter_content(array('id' => $this->item, 'prefill' => intval($_GET["edititem"]))); ?>
 
 </div>
 

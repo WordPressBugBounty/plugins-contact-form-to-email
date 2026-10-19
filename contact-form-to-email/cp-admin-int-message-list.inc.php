@@ -67,34 +67,37 @@ else if (isset($_GET['import']) && $_GET['import'] == '1')
     $form = json_decode($this->cleanJSON($this->get_option('form_structure', CP_CFEMAIL_DEFAULT_form_structure)));
     $form = $form[0];    
     
-    if (($handle = fopen($_FILES['importfile']['tmp_name'], "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    if ( isset( $_FILES['importfile']['tmp_name'] ) && is_uploaded_file( $_FILES['importfile']['tmp_name'] ) && ( $handle = fopen( $_FILES['importfile']['tmp_name'], "r" ) ) !== FALSE ) {
+        while ( ( $data = fgetcsv( $handle, 1000, ",", '"', "" ) ) !== FALSE ) {
+            if ( empty( $data ) || ( count( $data ) === 1 && $data[0] === null ) ) {
+                continue; // Skip empty lines
+            }
             $rowdata = array(); 
             $formatted_data = '';
-            $num = count($data);
-            $row++;
+            $num = count( $data );
             
-            $time  = strip_tags($data[0]);
-            $ip    = strip_tags($data[1]);
-            $email = strip_tags($data[2]);
+            $time  = isset( $data[0] ) ? sanitize_text_field( $data[0] ) : '';
+            $ip    = isset( $data[1] ) ? sanitize_text_field( $data[1] ) : '';
+            $email = isset( $data[2] ) ? sanitize_email( $data[2] ) : '';
             
-            for ($c=3; $c < $num; $c++)
-                if (isset($form[$c-3]))
-                {
-                    $rowdata[$form[$c-3]->name] = $data[$c]; 
-                    $formatted_data .= $form[$c-3]->title. ": ". $data[$c] . "\n\n";
-                }                    
-            $wpdb->insert($wpdb->prefix.$this->table_messages, array( 
+            for ( $c = 3; $c < $num; $c++ ) {
+                if ( isset( $form[ $c - 3 ] ) ) {
+                    $cell_value = sanitize_textarea_field( $data[ $c ] );
+                    $rowdata[ $form[ $c - 3 ]->name ] = $cell_value; 
+                    $formatted_data .= $form[ $c - 3 ]->title . ": " . $cell_value . "\n\n";
+                }
+            }
+            $wpdb->insert( $wpdb->prefix . $this->table_messages, array( 
                                    'formid' => $this->item,
                                    'time' => $time,
                                    'ipaddr' => $ip,
                                    'notifyto' => $email,
                                    'data' => $formatted_data,
-                                   'posted_data' => serialize($rowdata),
-                             ));            
+                                   'posted_data' => serialize( $rowdata ),
+                             ) );            
         }
-        fclose($handle);
-    }    
+        fclose( $handle );
+    }   
     $message = "CSV File Imported.";
 }
 
